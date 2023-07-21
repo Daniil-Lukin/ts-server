@@ -1,0 +1,16 @@
+export interface AuthResponse {
+  email: string;
+  accessToken: string;
+  refreshToken?: string;
+}
+
+export interface DBUser {
+  _id: string;
+  email: string;
+  password?: string;
+}
+
+export interface AuthDeleteResponse {
+  _id: string;
+  email: string;
+}
