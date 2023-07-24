@@ -20,8 +20,8 @@ const corsParams: CorsOptions = {
 app.use(cors(corsParams));
 app.use(express.json());
 app.use(cookieParser());
-app.use(authRoute, AuthRouter);
-app.use(valueRoute, ValueRouter);
+app.use("/api/auth", AuthRouter);
+app.use("/api/value", ValueRouter);
 
 const start = async () => {
   try {
