@@ -8,6 +8,6 @@ const router: Router = Router();
 router.post("/login", AuthController.logIn, errorHandler);
 router.post("/registration", AuthController.registration, errorHandler);
 router.delete("/:id", jwtCheck, AuthController.delete, errorHandler);
-router.post("/refresh", AuthController.refresh, jwtCheck, errorHandler);
+router.get("/refresh/:id", AuthController.refresh, jwtCheck, errorHandler);
 
 export default router;

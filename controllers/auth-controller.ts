@@ -24,11 +24,12 @@ class AuthController {
   public async logIn(req: Request, res: Response, next: NextFunction) {
     try {
       const body = req.body as { email: string; password: string } | null;
+      console.log(body);
       if (body) {
         const userData = await AuthService.login(body.email, body.password);
         return res.status(200).json(userData);
       } else {
-        throw new ResponseError(401, `Unauthorized user`);
+        throw new ResponseError(400, `User data was not provided`);
       }
     } catch (e) {
       next(e);
@@ -53,9 +54,9 @@ class AuthController {
 
   public async refresh(req: Request, res: Response, next: NextFunction) {
     try {
-      const email = req.body.email;
-      if (email) {
-        const data = await AuthService.refresh(email);
+      const id = req.params.id;
+      if (id) {
+        const data = await AuthService.refresh(id);
         return res.status(200).json(data);
       } else {
         throw new ResponseError(400, `email was not provided`);

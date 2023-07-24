@@ -7,7 +7,7 @@ import {
   GenerateTokenResponse,
   TokenPayloads,
 } from "../interfaces/token-interfaces";
-import { DBUser } from "../interfaces/auth-interfaces";
+import { AuthResponse, DBUser } from "../interfaces/auth-interfaces";
 import { ResponseError } from "../middleware/errorHandler.middleware";
 
 class TokenService {
@@ -53,25 +53,23 @@ class TokenService {
     return deletedToken;
   }
 
-  public async refreshToken(email: string): Promise<GenerateTokenResponse> {
-    const dbUser: DBUser | null = await UserModel.findOne({ email: email });
+  public async refreshToken(id: string): Promise<AuthResponse> {
+    const dbUser: DBUser | null = await UserModel.findById(id);
     console.log(dbUser);
     if (dbUser) {
       const dbRefreshObject = await TokenModel.findOne({
         user: dbUser._id,
       });
-      console.log(dbUser);
-      console.log(dbRefreshObject);
       if (dbRefreshObject) {
         const { refreshToken, accessToken } = this.generateTokens({
           _id: dbUser._id,
-          email: email,
+          email: dbUser.email,
         });
         dbRefreshObject.refreshToken = refreshToken;
         dbRefreshObject.save();
         return {
+          email: dbUser.email,
           accessToken,
-          refreshToken,
         };
       } else {
         throw new ResponseError(404, `RefreshToken was not found`);

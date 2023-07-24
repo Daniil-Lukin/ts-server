@@ -20,8 +20,8 @@ class AuthService {
     const { refreshToken, accessToken } = TokenService.generateTokens(user);
     TokenService.createDBToken(user._id, refreshToken);
     return {
+      _id: user._id,
       email: user.email,
-      refreshToken: refreshToken,
       accessToken: accessToken,
     };
   }
@@ -37,12 +37,10 @@ class AuthService {
       );
 
       if (isPasswordEqual) {
-        const { accessToken, refreshToken } = await TokenService.refreshToken(
-          email
-        );
+        const { accessToken } = await TokenService.refreshToken(userData._id);
         return {
           email,
-          refreshToken,
+          _id: userData._id,
           accessToken,
         };
       } else {
@@ -65,16 +63,12 @@ class AuthService {
     }
   }
 
-  public async refresh(email: string): Promise<AuthResponse> {
-    const refreshedTokens = await TokenService.refreshToken(email);
-    if (refreshedTokens) {
-      return {
-        email: email,
-        accessToken: refreshedTokens.accessToken,
-        refreshToken: refreshedTokens.refreshToken,
-      };
+  public async refresh(id: string): Promise<AuthResponse> {
+    const data = await TokenService.refreshToken(id);
+    if (data) {
+      return data;
     } else {
-      throw new ResponseError(404, `Token of ${email} user not found`);
+      throw new ResponseError(404, `Token of ${id} user not found`);
     }
   }
 }
